@@ -1,3 +1,5 @@
+#![feature(test)]
+
 use std::io::prelude::*;
 use std::time::{Duration, Instant};
 use tokio::io::AsyncReadExt;
@@ -6,7 +8,7 @@ type BoxedError = Box<dyn std::error::Error + Send + Sync>;
 type Result<T, E = BoxedError> = core::result::Result<T, E>;
 
 /// Have producer generate content at roughly this rate.
-const BITS_PER_SEC: usize = 6_000_000;
+const BITS_PER_SEC: usize = 24_000_000;
 
 enum Mode {
     Producer,
@@ -67,6 +69,7 @@ async fn tokio_consumer() -> Result<()> {
     let mut ts_buffer = [0u8; 188];
     loop {
         src.read_exact(&mut ts_buffer).await?;
+        core::hint::black_box(&mut ts_buffer);
     }
 }
 
@@ -78,5 +81,6 @@ async fn std_consumer() -> Result<()> {
     loop {
         // tokio::task::block_in_place(|| src.read_exact(&mut ts_buffer))?;
         src.read_exact(&mut ts_buffer)?;
+        core::hint::black_box(&mut ts_buffer);
     }
 }
