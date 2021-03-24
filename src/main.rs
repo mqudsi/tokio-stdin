@@ -1,6 +1,6 @@
 use std::io::prelude::*;
 use std::time::{Duration, Instant};
-use tokio::io::{AsyncRead, AsyncReadExt, AsyncBufRead, AsyncBufReadExt, AsyncWrite, AsyncWriteExt};
+use tokio::io::AsyncReadExt;
 
 type BoxedError = Box<dyn std::error::Error + Send + Sync>;
 type Result<T, E = BoxedError> = core::result::Result<T, E>;
@@ -33,7 +33,8 @@ async fn main() {
         Mode::Producer => producer().await,
         Mode::TokioConsumer => tokio_consumer().await,
         Mode::StdConsumer => std_consumer().await,
-    }.unwrap();
+    }
+    .unwrap();
 }
 
 async fn producer() -> Result<()> {
